@@ -1,0 +1,11 @@
+cache/hub
+cache/msmarco-distilbert-base-tas-b/*
+cache/tinyroberta-squad2/*
+
+cli/bin
+cli/obj
+
+corpus/processed/*
+corpus/raw/*
+
+models/*
