@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+torch = "*"
+numpy = "*"
+transformers = "*"
+datasets = "*"
+evaluate = "*"
+tqdm = "*"
+fastapi = "*"
+uvicorn = "*"
+slack-bolt = "*"
+
+[dev-packages]
+black = "*"
+isort = "*"
+flake8 = "*"
+watchdog = "*"
+
+[requires]
+python_version = "3.9"
