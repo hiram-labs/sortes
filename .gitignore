@@ -1,0 +1,96 @@
+.notes.txt
+
+cache/hub
+cache/msmarco-distilbert-base-tas-b/*
+cache/tinyroberta-squad2/*
+
+cli/bin
+cli/obj
+
+corpus/processed/*
+corpus/raw/*
+
+models/*
+
+
+.idea
+.vscode
+.ipynb_checkpoints
+.mypy_cache
+__pycache__
+.pytest_cache
+htmlcov
+dist
+site
+.coverage
+coverage.xml
+.netlify
+test.db
+log.txt
+Pipfile.lock
+env3.*
+env
+.env
+.env*
+!.env.example
+docs_build
+venv
+docs.zip
+archive.zip
+
+# vim temporary files
+*~
+.*.sw?
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
