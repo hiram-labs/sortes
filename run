@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -e                                    # exit execution if a command fails
+set -a                                    # set marking all created and all modified variables for export
+[ ! -f ./.env ] || . ./.env               # load environment variables
+set +a                                    # unset marking variables for export
+
+__ARG=$1
+
+__BUILD_CLI_BIN="build:cli"
+__CLEAN_CLI_MAKE_BUILD="clean:cli"
+__EXECUTE_CLI_BIN="exec:cli"
+__START_API_SERVER="exec:api"
+__START_UI_SERVER="exec:ui"
+__START_SLACK_SERVER="exec:slack"
+
+
+if [ "$__ARG" = "$__BUILD_CLI_BIN" ]; then
+    shift
+    make -C ./cli
+fi
+
+if [ "$__ARG" = "$__CLEAN_CLI_MAKE_BUILD" ]; then
+    shift
+    make -C ./cli clean
+fi
+
+if [ "$__ARG" = "$__EXECUTE_CLI_BIN" ]; then
+    shift
+    ./cli/bin/${APP_NAME} "$@"
+fi
+
+if [ "$__ARG" = "$__START_API_SERVER" ]; then
+    shift
+    if [ "$CURRENT_ENV" = "development" ]; then
+        uvicorn server.api.main:app --host "${LOCALHOST}" --port "${FAST_API_PORT}" --reload --reload-dir ./server --log-level info --lifespan off
+    fi
+
+    if [ "$CURRENT_ENV" = "test" ]; then
+        echo "No Tests Defined"
+    fi
+
+    if [ "$CURRENT_ENV" = "production" ]; then
+        uvicorn server.api.main:app --host "${LOCALHOST}" --port "${FAST_API_PORT}"
+    fi
+fi
+
+if [ "$__ARG" = "$__START_UI_SERVER" ]; then
+    shift
+    if [ "$CURRENT_ENV" = "development" ]; then
+        php -S "${LOCALHOST}":"${TINY_FILE_MANAGER_PORT}" -t ./ui
+    fi
+fi
+
+if [ "$__ARG" = "$__START_SLACK_SERVER" ]; then
+    shift
+    if [ "$CURRENT_ENV" = "development" ]; then
+        watchmedo auto-restart --patterns="./slack/*.py" --recursive --signal SIGTERM python ./slack/app.py
+    fi
+
+    if [ "$CURRENT_ENV" = "test" ]; then
+        echo "No Tests Defined"
+    fi
+
+    if [ "$CURRENT_ENV" = "production" ]; then
+        python ./slack/app.py
+    fi
+fi
