@@ -9,3 +9,6 @@ corpus/processed/*
 corpus/raw/*
 
 models/*
+
+.git
+.vscode
