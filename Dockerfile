@@ -79,7 +79,7 @@ RUN set -a && . ./.env && set +a \
 RUN set -a && . ./.env && set +a \
     && git clone https://huggingface.co/sentence-transformers/msmarco-distilbert-base-tas-b ${PASSAGE_RANK_MODEL_DIR_PATH} \
     && git clone https://huggingface.co/deepset/tinyroberta-squad2 ${EXTRACTIVE_Q_A_MODEL_DIR_PATH} \
-    && git clone git clone https://huggingface.co/philschmid/bart-large-cnn-samsum ${SUMMARISATION_MODEL_DIR_PATH}
+    && git clone https://huggingface.co/philschmid/bart-large-cnn-samsum ${SUMMARISATION_MODEL_DIR_PATH}
 
 # clean up
 RUN apt-get -y remove --purge \
