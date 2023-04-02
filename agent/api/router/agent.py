@@ -91,5 +91,4 @@ async def query(payload: Input):
                 summary=summary,
             )
         )
-
     return dict(candidates=candidates)
