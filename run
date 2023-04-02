@@ -8,6 +8,9 @@ set +a                                    # unset marking variables for export
 __ARG=$1
 
 __PRODUCTION="prod"
+__BUILD_DOCKER_IMAGE="build:image"
+__START_DOCKER_IMAGE="start:image"
+__STOP_DOCKER_IMAGE="stop:image"
 __BUILD_CLI_BIN="build:cli"
 __CLEAN_CLI_MAKE_BUILD="clean:cli"
 __EXECUTE_CLI_BIN="exec:cli"
@@ -20,6 +23,21 @@ if [ "$__ARG" = "$__PRODUCTION" ]; then
     shift
     export CURRENT_ENV="production"
     supervisord
+fi
+
+if [ "$__ARG" = "$__BUILD_DOCKER_IMAGE" ]; then
+    shift
+    docker build -t "$@" hiramlabs/sortes .
+fi
+
+if [ "$__ARG" = "$__START_DOCKER_IMAGE" ]; then
+    shift
+    docker run --name sortes -d "$@" hiramlabs/sortes
+fi
+
+if [ "$__ARG" = "$__STOP_DOCKER_IMAGE" ]; then
+    shift
+    docker stop "$@" sortes
 fi
 
 if [ "$__ARG" = "$__BUILD_CLI_BIN" ]; then
