@@ -4,6 +4,10 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV NGINX_SERVER_NAME localhost
 ENV NGINX_PORT 8080
 
+# install third party apt repositories
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
+    && curl -sL https://deb.nodesource.com/setup_14.x | bash 
+
 # update package manager
 RUN apt-get update
 
@@ -12,18 +16,17 @@ RUN apt-get install -y \
     make \
     gcc \
     git \
+    git-lfs \
     curl \
     gnupg2 \
     gettext-base \
     supervisor \
     python3 \
     python3-pip \
+    nodejs \
     php7.4-fpm \
     nginx
 
-# install nodejs 14 from nodejs repo
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash \
-    && apt-get install nodejs && rm -rf /var/lib/apt/lists/*
 
 # copy all files and set the dest as working dir
 COPY . /usr/home/sortes
@@ -72,16 +75,24 @@ RUN set -a && . ./.env && set +a \
     && pip3 uninstall pipenv -y \
     && rm -rf Pipfile*
 
+# download models
+RUN set -a && . ./.env && set +a \
+    && git clone https://huggingface.co/sentence-transformers/msmarco-distilbert-base-tas-b ${PASSAGE_RANK_MODEL_DIR_PATH} \
+    && git clone https://huggingface.co/deepset/tinyroberta-squad2 ${EXTRACTIVE_Q_A_MODEL_DIR_PATH} \
+    && git clone git clone https://huggingface.co/philschmid/bart-large-cnn-samsum ${SUMMARISATION_MODEL_DIR_PATH}
+
 # clean up
 RUN apt-get -y remove --purge \
     make \
     gcc \
     git \
+    git-lfs \
     curl \
     gnupg2 \
     gettext-base \
     && apt-get -y autoremove \
-    && apt-get -y clean
+    && apt-get -y clean \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE ${NGINX_PORT}
 
