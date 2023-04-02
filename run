@@ -7,13 +7,20 @@ set +a                                    # unset marking variables for export
 
 __ARG=$1
 
+__PRODUCTION="prod"
 __BUILD_CLI_BIN="build:cli"
 __CLEAN_CLI_MAKE_BUILD="clean:cli"
 __EXECUTE_CLI_BIN="exec:cli"
-__START_API_SERVER="exec:api"
 __START_UI_SERVER="exec:ui"
+__START_AGENT_SERVER="exec:agent"
 __START_SLACK_SERVER="exec:slack"
 
+
+if [ "$__ARG" = "$__PRODUCTION" ]; then
+    shift
+    export CURRENT_ENV="production"
+    supervisord
+fi
 
 if [ "$__ARG" = "$__BUILD_CLI_BIN" ]; then
     shift
@@ -30,39 +37,36 @@ if [ "$__ARG" = "$__EXECUTE_CLI_BIN" ]; then
     ./cli/bin/${APP_NAME} "$@"
 fi
 
-if [ "$__ARG" = "$__START_API_SERVER" ]; then
+if [ "$__ARG" = "$__START_UI_SERVER" ]; then
     shift
     if [ "$CURRENT_ENV" = "development" ]; then
-        uvicorn server.api.main:app --host "${LOCALHOST}" --port "${FAST_API_PORT}" --reload --reload-dir ./server --log-level info --lifespan off
+        php -S "${LOCALHOST}":"${UI_DEV_PORT}" -t ./ui
     fi
 
     if [ "$CURRENT_ENV" = "test" ]; then
         echo "No Tests Defined"
     fi
-
-    if [ "$CURRENT_ENV" = "production" ]; then
-        uvicorn server.api.main:app --host "${LOCALHOST}" --port "${FAST_API_PORT}"
-    fi
 fi
 
-if [ "$__ARG" = "$__START_UI_SERVER" ]; then
+if [ "$__ARG" = "$__START_AGENT_SERVER" ]; then
     shift
     if [ "$CURRENT_ENV" = "development" ]; then
-        php -S "${LOCALHOST}":"${TINY_FILE_MANAGER_PORT}" -t ./ui
+        uvicorn agent.api.main:app --host "${LOCALHOST}" --port "${AGENT_API_DEV_PORT}" --reload --reload-dir ./agent --log-level info --lifespan off
+    fi
+
+    if [ "$CURRENT_ENV" = "test" ]; then
+        echo "No Tests Defined"
     fi
 fi
 
 if [ "$__ARG" = "$__START_SLACK_SERVER" ]; then
     shift
     if [ "$CURRENT_ENV" = "development" ]; then
-        watchmedo auto-restart --patterns="./slack/*.py" --recursive --signal SIGTERM python ./slack/app.py
+        # ngrok may be needed for this https://api.slack.com/start/building/bolt-python#ngrok
+        uvicorn slack.main:bot --host "${LOCALHOST}" --port "${SLACK_API_DEV_PORT}" --reload --reload-dir ./slack --log-level info --lifespan off
     fi
 
     if [ "$CURRENT_ENV" = "test" ]; then
         echo "No Tests Defined"
-    fi
-
-    if [ "$CURRENT_ENV" = "production" ]; then
-        python ./slack/app.py
     fi
 fi
