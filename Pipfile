@@ -13,12 +13,12 @@ tqdm = "*"
 fastapi = "*"
 uvicorn = "*"
 slack-bolt = "*"
+httpx = "*"
 
 [dev-packages]
 black = "*"
 isort = "*"
 flake8 = "*"
-watchdog = "*"
 
 [requires]
 python_version = "3.9"
