@@ -10,14 +10,17 @@ from .utils import agent
 if os.environ.get("CURRENT_ENV") == "production":
     logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO)
     agent = agent.make_unix_socket_call
+    app = AsyncApp(
+        token=os.environ.get("SLACK_BOT_TOKEN"),
+        signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+    )
 else:
     logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
     agent = agent.make_http_call
-
-app = AsyncApp(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
-)
+    app = AsyncApp(
+        token=os.environ.get("SLACK_BOT_DEV_TOKEN"),
+        signing_secret=os.environ.get("SLACK_SIGNING_DEV_SECRET"),
+    )
 
 
 @app.event("app_mention")
