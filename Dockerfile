@@ -33,7 +33,8 @@ COPY . /usr/home/sortes
 WORKDIR /usr/home/sortes
 
 # setup php-fpm config
-RUN mkdir -p /run/php
+RUN set -a && . ./.env && set +a \
+    && mkdir -p /run/php
 
 # setup nginx
 RUN set -a && . ./.env && set +a \
@@ -49,14 +50,29 @@ RUN set -a && . ./.env && set +a \
 # setup caches dir
 RUN set -a && . ./.env && set +a \
     && rm -rf ./cache \
-    && mkdir -p "${PASSAGE_RANK_MODEL_DIR_PATH}" \
-    && mkdir -p "${EXTRACTIVE_Q_A_MODEL_DIR_PATH}"
+    && mkdir -p $(dirname "${PASSAGE_RANK_MODEL_LABELS_PY_LIST_PATH}") \
+    && mkdir -p $(dirname "${PASSAGE_RANK_MODEL_OUTPUT_PT_TENSOR_PATH}") \
+    && mkdir -p $(dirname "${EXTRACTIVE_Q_A_MODEL_CONTEXTS_PY_LIST_PATH}") \
+    && mkdir -p $(dirname "${EXTRACTIVE_Q_A_MODEL_OUTPUT_PT_TENSOR_PATH}") \
+    && printf "import os; import pickle;\n\
+rank_labels=os.environ['PASSAGE_RANK_MODEL_LABELS_PY_LIST_PATH']\n\
+rank_tensors=os.environ['PASSAGE_RANK_MODEL_OUTPUT_PT_TENSOR_PATH']\n\
+extract_contexts=os.environ['EXTRACTIVE_Q_A_MODEL_CONTEXTS_PY_LIST_PATH']\n\
+extract_tensors=os.environ['EXTRACTIVE_Q_A_MODEL_OUTPUT_PT_TENSOR_PATH']\n\
+paths=[rank_labels, rank_tensors, extract_contexts, extract_tensors]\n\
+for path in paths:\n\
+    with open(path, 'wb') as f:\n\
+        pickle.dump(1, f)\n" \
+    > tmp.pickel.script \
+    && python3 tmp.pickel.script \
+    && rm -rf tmp.pickel.script
 
 # setup corpus dir
 RUN set -a && . ./.env && set +a \
     && rm -rf ./corpus \
     && mkdir -p "${CORPUS_DIR_PATH}" \
     && chown -R www-data:www-data "${CORPUS_DIR_PATH}" \
+    && chown -R www-data:www-data $(dirname "${CORPUS_OUTPUT_FILE_PATH}") \
     && mkdir -p $(dirname "${CORPUS_OUTPUT_FILE_PATH}") \
     && touch "${CORPUS_OUTPUT_FILE_PATH}"
 
