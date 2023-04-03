@@ -1,28 +1,35 @@
+import logging
 import os
 
 import httpx
-import requests
 
 from . import parse
 
+logger = logging.getLogger(__name__)
+
 error_msg = "Sorry I could not process this request"
-http_url = f"http://localhost:5001/{os.environ['AGENT_QUERY_ENDPOINT']}"
-unix_soc_path = f"http://{os.environ['AGENT_QUERY_ENDPOINT']}"
-transport = httpx.HTTPTransport(uds="/var/run/agent.sock")
-client = httpx.Client(transport=transport)
+http_url = f"http://{os.environ['LOCALHOST']}:{os.environ['AGENT_API_DEV_PORT']}/qa-agent/query"
+unix_soc_path = f"http://agent/qa-agent/query"
+transport = httpx.AsyncHTTPTransport(uds="/var/run/agent.sock")
 
 
-def make_unix_socket_call(req: str):
-    response = client.post(unix_soc_path, json=dict(query=req))
-    if response.status_code == 200:
-        return parse.agent_response(response.json())
-    else:
+async def make_unix_socket_call(req: str):
+    try:
+        async with httpx.AsyncClient(transport=transport, timeout=60) as client:
+            response = await client.post(unix_soc_path, json=dict(query=req))
+            response.raise_for_status()
+            return parse.agent_response(response.json())
+    except Exception as e:
+        logger.error(f"\nHttpx client raised error: {e}\n")
         return error_msg
 
 
-def make_http_call(req: str):
-    response = requests.post(http_url, json=dict(query=req))
-    if response.status_code == 200:
-        return parse.agent_response(response.json())
-    else:
+async def make_http_call(req: str):
+    try:
+        async with httpx.AsyncClient(timeout=60) as client:
+            response = await client.post(http_url, json=dict(query=req))
+            response.raise_for_status()
+            return parse.agent_response(response.json())
+    except Exception as e:
+        logger.error(f"\nHttpx client raised error: {e}\n")
         return error_msg

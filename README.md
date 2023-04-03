@@ -21,23 +21,28 @@ A question and answer agent powered by transformer architecture and exposed thro
 At the root of the project:
 
 ```
-    git clone
-    cd qa_engine
+    git clone                   # check https://github.com/hiram-labs/sortes
+    cd                          # into cloned directory
     pipenv install --dev
     pipenv shell
 ```
 
 ### Running
 
-At the root of the project:
+At the root of the project in a pipenv environments as outline before, run any of these commands
 
 ```
 pipenv shell
 chmod +x ./run      # only required to be executed onces
+./run prod          # start in production
+./run build:image   # build docker images
+./run start:image   # start docker image
+./run stop:image    # stop docker image
 ./run build:cli     # build the cli binary
 ./run clean:cli     # build the cli binary
 ./run exec:cli      # execute the cli binary
-./run exec:api      # starts fast api server
+./run exec:ui       # starts php server
+./run exec:agent    # starts fast api server
 ./run exec:slack    # starts slack bot
 ```
 
@@ -52,7 +57,7 @@ There is a strict naming convention that is a 3 digit prefix and a description w
 000-short-description
 ```
 
-The very first line of the file is reserved for the associated link. Which will be used to label the document. The first line should only be packed with the link follow by a link break and nothing else.
+The very first line of the file is reserved for the associated link/label. Which will be used to label the document. The first line should only be packed with the link follow by a link break and nothing else.
 
 ```
 https://some.link.to.be.associated.com

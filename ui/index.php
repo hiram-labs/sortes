@@ -1555,7 +1555,14 @@ if (isset($_GET['settings']) && !FM_READONLY) {
                             <button type="submit" class="btn btn-success"> <i class="fa fa-check-circle"></i> <?php echo lng('Save'); ?></button>
                         </div>
                     </div>
+                </form>
 
+                <form id="process-corpus-form" action="process_corpus.php" method="post">
+                    <div class="mb-3 row">
+                        <div class="col-sm-10">
+                        <button type="submit" class="btn btn-success"> <i class="fa fa-check-circle"></i> <?php echo 'Process Corpus'; ?></button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -27,12 +27,10 @@ coverage.xml
 .netlify
 test.db
 log.txt
-!Pipfile.lock
 env3.*
 env
 .env
 .env*
-!.env.example
 docs_build
 venv
 docs.zip
@@ -94,3 +92,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# force include
+!Pipfile.lock
+!.env.example

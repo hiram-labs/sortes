@@ -21,7 +21,8 @@ def get_parsed_query(query):
     return parsed_query
 
 
-def get_top_2_ranked_context_labels(query):
+def get_top_ranked_labels(query):
+    # TODO: compare the score on either take top 2 if close enough* or just the top one
     top_2_ranked_context_labels = rank_transformer.instance.input(query)["rankings"][:2]
     logger.info(f"[RANKINGS]{NEWLINE}{NEWLINE.join(top_2_ranked_context_labels)}")
     return top_2_ranked_context_labels
@@ -44,7 +45,7 @@ def get_extractive_answers_summary(query, extract_answers):
         ]
     )["summaries"]
     logger.info(f"[EACH_SUMMARIES]{NEWLINE}{NEWLINE.join(summary['each'])}")
-    # TODO: this seems to be blocking the app
+    # TODO: this seems to be blocking the app because it takes too long
     # summary["all"] = (
     #     summarise_transformer.instance.input(
     #         f"{SUMMARY_QUERY_PREFIX}{query}{NEWLINE}{SUMMARY_ANSWER_PREFIX}{' '.join(extract_answers)}"
@@ -55,7 +56,12 @@ def get_extractive_answers_summary(query, extract_answers):
     summary["all"] = ""
     logger.info(f"[ALL_SUMMARIES]{NEWLINE}{summary['all']}")
     summary["best"] = (
-        comparator.first_sentence(summary["each"][0]) if summary["each"] else ""
+        # TODO: do a reflection of the summary
+        # - strip out non full sentences
+        # - compare if the summary is compatible with the context to reduce hallucination
+        comparator.first_sentence(summary["each"][0])
+        if summary["each"]
+        else ""
     )
     return summary
 
@@ -78,7 +84,7 @@ async def preprocess(request: Request):
 async def query(payload: Input):
     candidates = list()
     query = get_parsed_query(payload.query)
-    labels = get_top_2_ranked_context_labels(query)
+    labels = get_top_ranked_labels(query)
     for index, label in enumerate(labels):
         answers = get_extractive_answers(query, label)
         summary = get_extractive_answers_summary(query, answers)
