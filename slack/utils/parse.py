@@ -1,5 +1,8 @@
+import logging
 import operator
 from functools import reduce
+
+logger = logging.getLogger(__name__)
 
 
 def agent_response(response: dict):
