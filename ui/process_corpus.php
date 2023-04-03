@@ -10,9 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "<h4>" . "Processing error. Redirecting in 3 seconds..." . "</h4>";
         echo "<pre>" . implode("\n", $output) . "</pre>";
-        sleep(3);
     }
-    echo "<script>window.location.href = '/'</script>";
+    echo "<script>setTimeout(()=>{window.location.href = '/'},3000);</script>";
     exit;
 }
 ?>
