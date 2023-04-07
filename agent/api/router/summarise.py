@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter
 
-from ...summarise import transformer
+from ...model.summarise import transformer
 from ..schema.summarise import Input, Output
 
 logger = logging.getLogger(__name__)

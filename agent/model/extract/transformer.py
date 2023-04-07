@@ -8,7 +8,7 @@ from transformers import (
     tokenization_utils_base,
 )
 
-from ..utils import packer, parser, pickler
+from ...utils import packer, parser, pickler
 
 BOS_TOKEN_ID = 0
 EOS_TOKEN_ID = 2

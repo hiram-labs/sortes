@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from transformers import AutoModel, AutoTokenizer
 
-from ..utils import packer, pickler
+from ...utils import packer, pickler
 
 
 class Instance:
