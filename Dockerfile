@@ -71,9 +71,9 @@ for path in paths:\n\
 RUN set -a && . ./.env && set +a \
     && rm -rf ./corpus \
     && mkdir -p "${CORPUS_DIR_PATH}" \
+    && mkdir -p $(dirname "${CORPUS_OUTPUT_FILE_PATH}") \
     && chown -R www-data:www-data "${CORPUS_DIR_PATH}" \
     && chown -R www-data:www-data $(dirname "${CORPUS_OUTPUT_FILE_PATH}") \
-    && mkdir -p $(dirname "${CORPUS_OUTPUT_FILE_PATH}") \
     && touch "${CORPUS_OUTPUT_FILE_PATH}"
 
 # setup sortes cli
