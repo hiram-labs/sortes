@@ -2,7 +2,7 @@ import os
 
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from ..utils import comparator
+from ...utils import comparator
 
 MIN_SUMMARY_LENGTH = 56
 MAX_SUMMARY_LENGTH = 142
