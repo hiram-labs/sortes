@@ -37,7 +37,7 @@
 
 void spush(DOC_PROCESSED *doc_proc, SEQ *seq)
 {
-    if ((size_t)(doc_proc->seqs_len * MAX_SEQ_LENGTH) > (sizeof(doc_proc->seqs)))
+    if ((doc_proc->seqs_len * MAX_SEQ_LENGTH) > (sizeof(doc_proc->seqs)))
     {
         printf("Error: the document is bigger than allowed\n");
         exit(1);
