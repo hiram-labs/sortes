@@ -42,8 +42,8 @@ void fpack(DOC_RAW *doc_raw, FILE *fp)
     doc_proc->seqs_len = 0;
     strcpy(doc_proc->label, doc_raw->label);
 
-    short strider = 0;
-    short data_len = strlen(doc_raw->data);
+    size_t strider = 0;
+    size_t data_len = strlen(doc_raw->data);
     while (strider < data_len)
     {
         strncpy(seq->str, doc_raw->data + strider, MAX_SEQ_LENGTH - 1);
